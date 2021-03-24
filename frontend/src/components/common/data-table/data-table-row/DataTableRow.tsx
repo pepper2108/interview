@@ -1,8 +1,12 @@
 import { makeStyles } from "@material-ui/styles";
 import React from "react";
+import Chip from "../../chip/Chip";
+import { DataTableRowValue } from "../../interfaces";
+import { ChipProperties } from './../../interfaces';
 
 export interface DataTableRowProps {
-    rowValues: string[];
+    rowValues: DataTableRowValue[];
+    highlightTotalColumn?: boolean;
 }
 
 const useStyles = makeStyles({
@@ -19,21 +23,35 @@ const useStyles = makeStyles({
         border: "1px solid #e1e4e8"
     },
     label: { 
-        fontSize: "1.2em",
+        fontSize: "1.15em",
         letterSpacing: "0.03em"
+    },
+    total: {
+        "&:last-child > p:first-child": {
+            fontWeight: 600
+        }
     }
-}, { classNamePrefix: "data-table-row"});
+}, { classNamePrefix: "data-table-row" });
 
-export const DataTableRow = ({ rowValues }: DataTableRowProps): JSX.Element => {
+export const DataTableRow = ({ rowValues, highlightTotalColumn = true }: DataTableRowProps): JSX.Element => {
     const classes = useStyles();
+    
+    const isChipValue = (value: DataTableRowValue): value is ChipProperties => {
+        return (value as ChipProperties).color !== undefined;
+    }
+
     return (
-        <div className={classes.root}>
+        <div className={`${classes.root} ${highlightTotalColumn ? classes.total : ""}`}>
             {
-                rowValues.map((column: string, index: number) => 
-                    <p key={index} className={classes.label}>{column}</p>
+                rowValues.map((column: DataTableRowValue, index: number) => 
+                    {
+                        return isChipValue(column) ? 
+                            <Chip key={index} label={column.label} size={column.size} color={column.color}/> :
+                            <p key={index} className={classes.label}>{column}</p>
+                    }
                 )
             }
-        </div>
+        </div> 
     )
 };
 
