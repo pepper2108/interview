@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { getEmployeeSalaryData } from "../../api/SalaryAnalyticsApi";
 import { CheckboxGroupProperties } from "../common/interfaces";
 import { EmployeeDataByCountry, EmployeeData, SalaryComparisonData } from "./interfaces";
 import EmployeeTable from "./salary-comparison-table/EmployeeTable";
+import useDeepCompareEffect from "use-deep-compare-effect";
 
 export interface SalaryAnalyticsProps {
     columnsNames: string[];
@@ -13,6 +14,7 @@ export const SalaryAnalytics = ({ columnsNames }: SalaryAnalyticsProps): JSX.Ele
     const [employeeDataByCountry, setEmployeeDataByCountry] = useState<EmployeeDataByCountry>({});
     const [aggregatedEmployeeDataByCountry, setAggregatedEmployeeDataByCountry] = useState<SalaryComparisonData[]>([]);
     const [filters, setFilters] = useState<CheckboxGroupProperties>({ groupLabel: "Countries", checkboxes: [] });
+    const isInitialMount = useRef(true);
 
     useEffect(() => {
         setRawEmployeeData(getEmployeeSalaryData());
@@ -29,13 +31,15 @@ export const SalaryAnalytics = ({ columnsNames }: SalaryAnalyticsProps): JSX.Ele
             });
             checkboxes.unshift({ checked: true, label: "All countries" });
 
-            setFilters({...filters, checkboxes: checkboxes, changeHandler: (event) => console.log(event)});
+            setFilters((filters) => ({...filters, checkboxes: checkboxes, changeHandler: (event) => console.log(event)}));
             setEmployeeDataByCountry(employeeDataByCountry);
         }
     }, [rawEmployeeData]);
 
-    useEffect(() => {
-        if (Object.keys(employeeDataByCountry).length) {
+    useDeepCompareEffect(() => {
+        if (isInitialMount.current) {
+            isInitialMount.current = false;
+        } else {
             let averageData: SalaryComparisonData[] = [];
             let totalData: SalaryComparisonData = { location: "Total", salary: 0, delta: 0 };
 
