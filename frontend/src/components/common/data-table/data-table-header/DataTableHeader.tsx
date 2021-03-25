@@ -40,11 +40,11 @@ export const DataTableHeader = ({ columns, filters }: DataTableHeaderProps): JSX
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
-    const handleFilterClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const handleFilterClick = (event: React.MouseEvent<HTMLButtonElement>): void => {
         setAnchorEl(event.currentTarget);
     };
 
-    const handlePopoverClose = () => {
+    const handlePopoverClose = (): void => {
         setAnchorEl(null);
     };
 

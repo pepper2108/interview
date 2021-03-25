@@ -12,20 +12,20 @@ export interface SalaryComparisonTableProps {
 export const SalaryComparisonTable = ({ columnsNames, rowValues, filters }: SalaryComparisonTableProps): JSX.Element => {
     const [mappedRowValues, setMappedRowValues] = useState<DataTableRowValue[][]>([]);
 
-    useEffect(() => {
-        const deltaChipsColors = {
-            positive: "#adff2e",
-            negative: "#ffa500",
-            zero: "#ffff00"
+    useEffect((): void => {
+        enum DeltaChipsColors {
+            "positive" = "#adff2e",
+            "negative" = "#ffa500",
+            "zero" = "#ffff00"
         };
 
-        const getChipColor = (delta: number) => {
+        const getChipColor = (delta: number): DeltaChipsColors => {
             if (delta > 0) {
-                return deltaChipsColors.positive;
+                return DeltaChipsColors.positive;
             } else if (delta < 0) {
-                return deltaChipsColors.negative;
+                return DeltaChipsColors.negative;
             } else {
-                return deltaChipsColors.zero;
+                return DeltaChipsColors.zero;
             }
         }
 
