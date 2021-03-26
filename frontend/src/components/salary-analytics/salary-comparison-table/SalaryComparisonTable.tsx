@@ -13,6 +13,7 @@ export const SalaryComparisonTable = ({ columnsNames, rowValues, filters }: Sala
     const [mappedRowValues, setMappedRowValues] = useState<DataTableRowValue[][]>([]);
 
     useEffect((): void => {
+
         enum DeltaChipsColors {
             "positive" = "#adff2e",
             "negative" = "#ffa500",
@@ -32,7 +33,7 @@ export const SalaryComparisonTable = ({ columnsNames, rowValues, filters }: Sala
         const getAdaptedDataTableValues = (rowValues: SalaryComparisonData[]): DataTableRowValue[][] => rowValues.map((salaryData: SalaryComparisonData) => {
             return [
                 salaryData.location,
-                `${salaryData.salary.toLocaleString(undefined, { style: "currency", currency: "USD", maximumFractionDigits: 0 })}`,
+                `${salaryData.salary.toLocaleString(undefined, { style: "currency", currency: "USD", maximumFractionDigits: 2 })}`,
                 { label: `${salaryData.delta >= 0 ? "+" : ""}${salaryData.delta}%`, color: `${getChipColor(salaryData.delta)}`, size: "medium" }
             ]
         });

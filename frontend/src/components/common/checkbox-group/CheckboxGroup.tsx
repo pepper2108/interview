@@ -17,7 +17,7 @@ export const CheckboxGroup = ({ groupLabel, checkboxes, changeHandler }: Checkbo
     return (
         <div className={classes.root}>
             <FormControl component="fieldset">
-                <FormLabel component="legend">{groupLabel}</FormLabel>
+                <FormLabel component="legend" className="Mui-focused">{groupLabel}</FormLabel>
                 <FormGroup>
                     {
                         checkboxes.map((checkbox: CheckboxProperties, index: number) => 
