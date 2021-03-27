@@ -3,6 +3,7 @@ import React, { ChangeEvent, lazy, Suspense, useEffect, useMemo, useRef, useStat
 import { getEmployeeSalaryData } from "../../api/SalaryAnalyticsApi";
 import { CheckboxGroupProperties } from "../common/interfaces";
 import { Loader } from "../common/loader/Loader";
+import { filterSelectedCountries, getAveragesByCountry, getDataForTotalColumn, groupEmployeesByCountry } from "./helpers";
 import { EmployeeDataByCountry, EmployeeData, SalaryComparisonData } from "./interfaces";
 
 export const SalaryAnalytics = (): JSX.Element => {
@@ -10,6 +11,7 @@ export const SalaryAnalytics = (): JSX.Element => {
     const [employeeDataByCountry, setEmployeeDataByCountry] = useState<EmployeeDataByCountry>({});
     const [aggregatedEmployeeDataByCountry, setAggregatedEmployeeDataByCountry] = useState<SalaryComparisonData[]>([]);
     const [filters, setFilters] = useState<CheckboxGroupProperties>({ groupLabel: "Countries", checkboxes: [], changeHandler: (event) => onFilterChange(event)});
+    const [isDataLoaded, setIsDataLoaded] = useState<boolean>(false);
     const [currentTabIndex, setCurrentTabIndex] = useState(0);
     const isInitialMount = useRef(true);
     const filtersRef = useRef(filters);
@@ -43,7 +45,10 @@ export const SalaryAnalytics = (): JSX.Element => {
     }
 
     useEffect((): void => {
-        setRawEmployeeData(getEmployeeSalaryData());
+        getEmployeeSalaryData().then(salaryData => {
+            setRawEmployeeData(salaryData as EmployeeData[]);
+            setIsDataLoaded(true);
+        });
     }, []);
 
     useEffect((): void => {
@@ -86,53 +91,6 @@ export const SalaryAnalytics = (): JSX.Element => {
         }
     }, [filters, employeeDataByCountry]);
 
-    const groupEmployeesByCountry = (array: any[], key: string): { [key: string]: EmployeeData[]} => {
-        return array.reduce((result: any, currentValue: any) => {
-          (result[currentValue[key]] = result[currentValue[key]] || []).push(currentValue);
-
-          return result;
-        }, {});
-    };
-
-    const getDataForTotalColumn = (array: any[], pointer: string): number => {
-        return array
-            .map(value => value[pointer])
-            .reduce((accumulator, currentValue) => accumulator + currentValue) / array.length;
-    };
-
-    const filterSelectedCountries = (rawData: EmployeeDataByCountry, filters: any[]): { [key: string]: EmployeeData[] } => {
-        return Object.fromEntries(Object.entries(rawData)
-            .filter(([key]) => filters.includes(key)));
-    };
-
-    const getAveragesByCountry = (shownData: EmployeeDataByCountry): SalaryComparisonData[] => {
-        let averageData: SalaryComparisonData[] = [];
-
-        const calculateAverageValues = (aggregatedEmployeeData: SalaryComparisonData, employeesAmount: number): SalaryComparisonData => {
-            return {
-                salary: aggregatedEmployeeData.salary / employeesAmount,
-                delta: parseFloat((aggregatedEmployeeData.delta / employeesAmount).toFixed(2)),
-                location: aggregatedEmployeeData.location
-            };
-        };
-
-        Object.entries(shownData).forEach(([country, employeeData]: [string, EmployeeData[]]) => {
-            const aggregatedEmployeeData = employeeData.reduce((result: SalaryComparisonData, currentValue: EmployeeData) => {
-                const parsedCurrentSalary = parseFloat(currentValue.currSalary.substring(1));
-                const parsedPreviousSalary = parseFloat(currentValue.prevSalary.substring(1));
-                result.salary += parsedCurrentSalary;
-                result.delta += ((parsedPreviousSalary / parsedCurrentSalary) * 100) - 100;
-
-                return result;
-            }, { location: country, salary: 0, delta: 0 } as SalaryComparisonData);
-            const averageDataByCountry = calculateAverageValues(aggregatedEmployeeData, employeeData.length);
-
-            averageData.push(averageDataByCountry);
-        });
-
-        return averageData;
-    }
-
     return (
         <>
             <Tabs
@@ -145,14 +103,17 @@ export const SalaryAnalytics = (): JSX.Element => {
 				<Tab label="Table" />
 				<Tab label="Chart" />
 			</Tabs>
-            <Suspense fallback={Loader("Loading...")}>
-			{
-				currentTabIndex === tabIndexes.salaryTableAnalytics ? 
-                    <TableComponent columnsNames={["Location", "Salary", "Delta"]} rowValues={aggregatedEmployeeDataByCountry} filters={filters}/> :
-					<ChartComponent columnsNames={["Bar chart"]}
-                         rowValues={aggregatedEmployeeDataByCountry.map(({ location, salary }) => ({location, salary}))} 
-                         filters={filters}/>
-			}
+            <Suspense fallback={Loader({ loadingLabel: "Loading..." })}>
+                {
+                    isDataLoaded ?
+                            currentTabIndex === tabIndexes.salaryTableAnalytics ? 
+                                <TableComponent columnsNames={["Location", "Salary", "Delta"]} rowValues={aggregatedEmployeeDataByCountry} filters={filters}/> :
+                                <ChartComponent columnsNames={["Bar chart"]}
+                                    rowValues={aggregatedEmployeeDataByCountry.map(({ location, salary }) => ({location, salary}))} 
+                                    filters={filters}/>
+                        : <Loader loadingLabel={"Fetching..."}/>
+                }
+			
             </Suspense>
         </>
     )

@@ -41,7 +41,7 @@ export const DataTableRow = ({ rowValues, highlightTotalColumn = true }: DataTab
     }
 
     return (
-        <div className={`${classes.root} ${highlightTotalColumn ? classes.total : ""}`}>
+        <div className={`${classes.root} ${highlightTotalColumn ? classes.total : ""}`} data-test-id="row">
             {
                 rowValues.map((column: DataTableRowValue, index: number) => 
                     {

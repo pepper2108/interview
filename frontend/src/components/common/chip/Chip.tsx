@@ -26,7 +26,7 @@ export const Chip = ({ label, color }: ChipProperties): JSX.Element => {
     const classes = useStyles();
 
     return (
-        <div className={classes.root} style={{ backgroundColor: color }}>
+        <div className={classes.root} style={{ backgroundColor: color }} data-test-id="chip">
             <p className={classes.label}>{label}</p>
         </div>
     )

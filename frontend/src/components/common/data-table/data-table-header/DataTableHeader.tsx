@@ -58,14 +58,14 @@ export const DataTableHeader = ({ columns, filters }: DataTableHeaderProps): JSX
     const id = isPopoverOpened ? 'simple-popover' : undefined;
 
     return (
-        <div className={classes.root}>
+        <div className={classes.root} data-test-id="header">
             {
                 columns.map((column: string, index: number) =>
-                    <p key={index} className={classes.label}>{column}</p>
+                    <p key={index} className={classes.label} title={column} data-test-id="column">{column}</p>
                 )
             }
 
-            <IconButton className={classes.filterButton} onClick={handleFilterClick}>
+            <IconButton className={classes.filterButton} onClick={handleFilterClick} data-test-id="filters-button">
                 <FilterListIcon />
             </IconButton>
 

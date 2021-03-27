@@ -52,18 +52,25 @@ const useStyles = makeStyles({
         left: "50%",
         transform: "translate(-50%, -50%)",
         display: "block",
-        width: "50px"
+        width: "100px"
+    },
+    label: {
+        textAlign: "center"
     }
 }, { classNamePrefix: "spinner" });
 
-export const Loader = (loadingLabel: string) => {
+export interface LoaderProps {
+    loadingLabel: string;
+}
+
+export const Loader = ({loadingLabel}: LoaderProps): JSX.Element => {
     const classes = useStyles();
 
     return (
         <div className={classes.root}>
             <div className={classes.img}>
                 <Spinner/>
-                <p>{loadingLabel}</p>
+                <p className={classes.label}>{loadingLabel}</p>
             </div>
         </div>
     )
