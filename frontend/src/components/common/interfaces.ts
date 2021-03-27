@@ -3,7 +3,6 @@ import { ChangeEvent } from "react";
 export interface ChipProperties {
     label: string;
     color: string;
-    size: "small" | "medium" | "large"
 }
 
 export type DataTableRowValue = string | ChipProperties;

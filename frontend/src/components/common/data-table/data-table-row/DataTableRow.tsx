@@ -46,7 +46,7 @@ export const DataTableRow = ({ rowValues, highlightTotalColumn = true }: DataTab
                 rowValues.map((column: DataTableRowValue, index: number) => 
                     {
                         return isChipValue(column) ? 
-                            <Chip key={index} label={column.label} size={column.size} color={column.color}/> :
+                            <Chip key={index} label={column.label} color={column.color}/> :
                             <p key={index} className={classes.label}>{column}</p>
                     }
                 )

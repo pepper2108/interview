@@ -34,7 +34,7 @@ export const SalaryComparisonTable = ({ columnsNames, rowValues, filters }: Sala
             return [
                 salaryData.location,
                 `${salaryData.salary.toLocaleString(undefined, { style: "currency", currency: "USD", maximumFractionDigits: 2 })}`,
-                { label: `${salaryData.delta >= 0 ? "+" : ""}${salaryData.delta}%`, color: `${getChipColor(salaryData.delta)}`, size: "medium" }
+                { label: `${salaryData.delta >= 0 ? "+" : ""}${salaryData.delta}%`, color: `${getChipColor(salaryData.delta)}` }
             ]
         });
 

@@ -4,11 +4,14 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 import { CheckboxGroupProperties } from "../../interfaces";
 import { IconButton, Popover } from "@material-ui/core";
 import CheckboxGroup from "../../checkbox-group/CheckboxGroup";
+import createBreakpoints from "@material-ui/core/styles/createBreakpoints";
 
 export interface DataTableHeaderProps {
     columns: string[];
     filters: CheckboxGroupProperties;
 }
+
+const breakpoints = createBreakpoints({});
 
 const useStyles = makeStyles({
     root: {
@@ -29,7 +32,10 @@ const useStyles = makeStyles({
     },
     filterButton: {
         position: "absolute",
-        right: "20px"
+        right: "20px",
+        [breakpoints.down("xs")]: {
+            right: 0
+        }
     },
     popoverContent: {
         padding: "10px"
