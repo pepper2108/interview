@@ -1,5 +1,5 @@
 import { makeStyles } from "@material-ui/styles";
-import React, { useEffect } from "react";
+import React from "react";
 import { CheckboxGroupProperties } from "../../common/interfaces";
 import { SalaryComparisonData } from "../interfaces";
 import { ResponsiveBar } from "@nivo/bar";
@@ -13,7 +13,12 @@ export interface SalaryComparisonChartProps {
 
 const useStyles = makeStyles({
     root: {
-        height: "700px"
+        height: "800px",
+        paddingBottom: "50px",
+        overflow: "hidden",
+        "g + text": {
+            display: "none"
+        }
     }
 }, { classNamePrefix: "salary-chart" });
 
@@ -34,6 +39,7 @@ const theme = {
         legend: {
             text: {
                 fontSize: 17,
+                className: "custom"
             }
         }
     },
@@ -48,10 +54,6 @@ const theme = {
 export const SalaryComparisonChart = ({ columnsNames, rowValues, filters }: SalaryComparisonChartProps): JSX.Element => {
     const classes = useStyles();
 
-    useEffect((): void => {
-        
-    }, [rowValues]);
-
     return (
         <div className={classes.root}>
             <DataTableHeader columns={columnsNames} filters={filters}/>
@@ -60,7 +62,7 @@ export const SalaryComparisonChart = ({ columnsNames, rowValues, filters }: Sala
                 keys={["salary"]}
                 indexBy="location"
                 theme={theme as any} // TS definition is incomplete for theme
-                margin={{ top: 50, right: 100, bottom: 100, left: 100 }}
+                margin={{ top: 50, right: 50, bottom: 100, left: 100 }}
                 padding={0.3}
                 colors={{ scheme: 'dark2' }}
                 borderColor={{ from: 'color', modifiers: [['darker', 1.6]] }}

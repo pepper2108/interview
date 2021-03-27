@@ -1,11 +1,9 @@
 import { Tab, Tabs } from "@material-ui/core";
-import React, { ChangeEvent, useEffect, useRef, useState } from "react";
+import React, { ChangeEvent, lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { getEmployeeSalaryData } from "../../api/SalaryAnalyticsApi";
 import { CheckboxGroupProperties } from "../common/interfaces";
+import { Loader } from "../common/loader/Loader";
 import { EmployeeDataByCountry, EmployeeData, SalaryComparisonData } from "./interfaces";
-import SalaryComparisonChart from "./salary-comparison-chart/SalaryComparisonChart";
-import SalaryComparisonTable from "./salary-comparison-table/SalaryComparisonTable";
-
 
 export const SalaryAnalytics = (): JSX.Element => {
     const [rawEmployeeData, setRawEmployeeData] = useState<EmployeeData[]>([]);
@@ -15,6 +13,10 @@ export const SalaryAnalytics = (): JSX.Element => {
     const [currentTabIndex, setCurrentTabIndex] = useState(0);
     const isInitialMount = useRef(true);
     const filtersRef = useRef(filters);
+
+    const TableComponent = useMemo(() => lazy(() => import("./salary-comparison-table/SalaryComparisonTable")), []);
+    const ChartComponent = useMemo(() => lazy(() => import("./salary-comparison-chart/SalaryComparisonChart")), []);
+
     const allCountriesLabel = "All countries";
     const allCountriesCheckboxIndex = 0;
 
@@ -37,7 +39,7 @@ export const SalaryAnalytics = (): JSX.Element => {
         } else {
             newCheckboxes[allCountriesCheckboxIndex].checked = newCheckboxes.every(checkbox => !checkbox.checked);
         }
-        setFilters({...filtersRef.current, checkboxes: newCheckboxes });
+        setFilters({...filtersRef.current, checkboxes: newCheckboxes }); 
     }
 
     useEffect((): void => {
@@ -143,13 +145,15 @@ export const SalaryAnalytics = (): JSX.Element => {
 				<Tab label="Table" />
 				<Tab label="Chart" />
 			</Tabs>
+            <Suspense fallback={Loader("Loading...")}>
 			{
 				currentTabIndex === tabIndexes.salaryTableAnalytics ? 
-                    <SalaryComparisonTable columnsNames={["Location", "Salary", "Delta"]} rowValues={aggregatedEmployeeDataByCountry} filters={filters}/> :
-					<SalaryComparisonChart columnsNames={["Bar chart"]}
+                    <TableComponent columnsNames={["Location", "Salary", "Delta"]} rowValues={aggregatedEmployeeDataByCountry} filters={filters}/> :
+					<ChartComponent columnsNames={["Bar chart"]}
                          rowValues={aggregatedEmployeeDataByCountry.map(({ location, salary }) => ({location, salary}))} 
                          filters={filters}/>
 			}
+            </Suspense>
         </>
     )
 };

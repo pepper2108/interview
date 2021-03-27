@@ -2,7 +2,7 @@ import { makeStyles } from "@material-ui/styles";
 import React, { useState } from "react";
 import FilterListIcon from '@material-ui/icons/FilterList';
 import { CheckboxGroupProperties } from "../../interfaces";
-import { Button, Popover } from "@material-ui/core";
+import { IconButton, Popover } from "@material-ui/core";
 import CheckboxGroup from "../../checkbox-group/CheckboxGroup";
 
 export interface DataTableHeaderProps {
@@ -29,7 +29,7 @@ const useStyles = makeStyles({
     },
     filterButton: {
         position: "absolute",
-        right: "50px"
+        right: "20px"
     },
     popoverContent: {
         padding: "10px"
@@ -59,14 +59,9 @@ export const DataTableHeader = ({ columns, filters }: DataTableHeaderProps): JSX
                 )
             }
 
-            <Button
-                variant="contained"
-                color="primary"
-                className={classes.filterButton}
-                startIcon={<FilterListIcon />}
-                onClick={handleFilterClick}
-            >Filter
-            </Button>
+            <IconButton className={classes.filterButton} onClick={handleFilterClick}>
+                <FilterListIcon />
+            </IconButton>
 
             <Popover
                 id={id}
