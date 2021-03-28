@@ -1,6 +1,6 @@
 import { EmployeeData, EmployeeDataByCountry, SalaryComparisonData } from "./interfaces";
 
-export const groupEmployeesByCountry = (array: any[], key: string): { [key: string]: EmployeeData[]} => {
+export const groupEmployeesByCountry = (array: EmployeeData[], key: string): EmployeeDataByCountry => {
     return array.reduce((result: any, currentValue: any) => {
       (result[currentValue[key]] = result[currentValue[key]] || []).push(currentValue);
 
@@ -14,7 +14,7 @@ export const getDataForTotalColumn = (array: any[], pointer: string): number => 
         .reduce((accumulator, currentValue) => accumulator + currentValue) / array.length;
 };
 
-export const filterSelectedCountries = (rawData: EmployeeDataByCountry, filters: any[]): { [key: string]: EmployeeData[] } => {
+export const filterSelectedCountries = (rawData: EmployeeDataByCountry, filters: string[]): EmployeeDataByCountry => {
     return Object.fromEntries(Object.entries(rawData)
         .filter(([key]) => filters.includes(key)));
 };

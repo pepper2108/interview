@@ -1,36 +1,31 @@
-# Panalyt Take-Home Coding Exercises
+# Employee data visualizer
 
-## What to expect?
-We understand that your time is valuable, and in anyone's busy schedule solving these exercises may constitute a fairly substantial chunk of time, so we really appreciate any effort you put in to helping us build a solid team.
+In scope of this task, my goal was to make the code as reusable as possible. The tables are built in a way that allows to add any amount of columns (to a reasonable limit, of course - but if, for instance, someone would like to add 4th column in the table, this should not be a problem at all thanks to grid layout). The table is also based on the component that could be used for any other table, so it's not bound to any business logic. Some functions used for mapping in SalaryAnalytics.tsx are still very closely related to the employees' salary analytics. This is because for such utilities I tend to use "the rule of three" - do not extract anything to shared until it's used three times.
 
-## What we are looking for?
-**Keep it simple**. Read the requirements and restrictions carefully and focus on solving the problem.
+## Used packages
 
-**Treat it like production code**. That is, develop your software in the same way that you would for any code that is intended to be deployed to production. These may be toy exercises, but we really would like to get an idea of how you build code on a day-to-day basis.
+I decided that mobx / redux are a bit of an overkill for such an app, as, in fact, no components need access to a shared store and the props chain is not so huge as it happens sometimes.
+For small UI components (tabs, checkboxes, and popover) I used material-ui. I don't actually like importing huge libraries for three components, but in this case, it would be too much of a time waste. Popover is used to hide the filters, they're on the right side of the header :)
 
-## How to submit?
-You can do this however you see fit - you can email us a tarball, a pointer to download your code from somewhere or just a link to a source control repository. Make sure your submission includes a small **README**, documenting any assumptions, simplifications and/or choices you made, as well as a short description of how to run the code and/or tests. Finally, to help us review your code, please split your commit history in sensible chunks (at least separate the initial provided code from your personal additions).
+For the chart, nivo seemed to be a decent choice, plus as mentioned, I had some experience with this library, so I decided: why not!
 
-## The Interview:
-After you submit your code, we will contact you to discuss and potentially arrange an in-person interview with some of the team.
-The interview will cover a wide range of technical and social aspects relevant to working at Panalyt, but importantly for this exercise: we will also take the opportunity to step through your submitted code with you.
+Obviously I wanted to try out react with typescript so it's fully written in typescript. I loved it!
 
-## The Exercises:
+For styling, I used material-ui/styles in order to try something new out. To be honest, I feel disappointed and I see no pros over good old less / scss. Maybe I didn't dig deep enough, IDK.
 
-### 1. [Frontend] Build a SPA that displays employee data
-The complete specification for this exercise can be found in the [EmployeeData.md].
+Finally, I used react-device-detect to achieve a better user experience on mobile devices. Speaking of which...
 
-## F.A.Q.
-1) _Is it OK to share your solutions publicly?_
-Yes, the questions are not prescriptive, the process and discussion around the code is the valuable part. You do the work, you own the code. Given we are asking you to give up your time, it is entirely reasonable for you to keep and use your solution as you see fit.
+## App responsiveness
 
-2) _Should I do X?_
-For any value of X, it is up to you, we intentionally leave the problem a little open-ended and will leave it up to you to provide us with what you see as important. Just remember to keep it simple. If it's a feature that is going to take you a couple of days, it's not essential.
+I tried to make the application look and feel the same on mobile as on desktop. Please, to check it out, either use a mobile device or emulator mode of Chrome dev tools, as react-device-detect relies on user-agent instead of screen width.
+Also, I added a loading indicator which pops up in two cases: when the data is "loading" - there is a 2s timeout for that and when the lazy loaded scripts for chart are fetched. The lazy loading helped to reduce the initial bundle size and improve the Lighthouse score.
 
-3) _Something is ambiguous, and I don't know what to do?_
-The first thing is: don't get stuck. We really don't want to trip you up intentionally, we are just attempting to see how you approach problems. That said, there are intentional ambiguities in the specifications, mainly to see how you fill in those gaps, and how you make design choices.
-If you really feel stuck, our first preference is for you to make a decision and document it with your submission - in this case there is really no wrong answer. If you feel it is not possible to do this, just send us an email and we will try to clarify or correct the question for you.
+## Tests
 
-Good luck!
+It turns out to be one hell of a challenge to properly test functional components, especially, when they are not really interactive and are only showing the data.
+To achieve a better coverage, I extracted some of the functions used for data mapping from SalaryAnalytics.tsx to helpers.ts in the same folder; this allowed to at least test that those functions return the expected results. As for the technologies, nothing extraordinary: jest & enzyme.
 
-DISCLAIMER: This description was shamelessly copied from the Paidy Interview exercise as it was well written and the quality of the team that was built at Paidy reflected the effort put into the hiring process.
+## Launch the app
+
+Run the application locally: `npm start`
+Run the tests: `npm test`
