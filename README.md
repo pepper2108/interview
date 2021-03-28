@@ -25,6 +25,13 @@ Also, I added a loading indicator which pops up in two cases: when the data is "
 It turns out to be one hell of a challenge to properly test functional components, especially, when they are not really interactive and are only showing the data.
 To achieve a better coverage, I extracted some of the functions used for data mapping from SalaryAnalytics.tsx to helpers.ts in the same folder; this allowed to at least test that those functions return the expected results. As for the technologies, nothing extraordinary: jest & enzyme.
 
+## Warnings that you might encounter
+
+There are two errors / warnings in the app, both caused by dependencies. It's quite crazy how misaligned are they with the current version of React, but it is what it is.
+One is when you open the filters popover: React complains about deprecated `findDOMNode` function used in the popover.
+Another one is caused by nivo/bar, the message is about `React.createFactory()` deprecation.
+Anyway, both are harmless. I didn't want to disable strictMode because of those :)
+
 ## Launch the app
 
 Run the application locally: `npm start`
